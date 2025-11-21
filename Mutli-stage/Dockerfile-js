@@ -1,0 +1,22 @@
+# Stage 1: Build the Node.js application
+FROM node:16 AS build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+#copy the remaining files of the code
+COPY . . 
+
+# Stage 2: Runtime image
+FROM node:16-slim
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+EXPOSE 9090
+
+CMD ["npm", "start"]
